@@ -3,7 +3,6 @@ import 'package:personal_expenses/widgets/transaction_list.dart';
 
 import 'models/transaction.dart';
 import 'widgets/transaction_form.dart';
-import 'widgets/user_transactions.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
+        onPressed: () => startAddTransaction(context),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
