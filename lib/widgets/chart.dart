@@ -12,14 +12,14 @@ class Chart extends StatelessWidget {
       final amount = recentTransactions.fold(0.0, (dayTotal, transaction) {
         final isSameDay = DateFormat.yMMMd().format(transaction.date) ==
             DateFormat.yMMMd().format(weekDay);
-        return isSameDay ? transaction.amount : 0.0;
+        return dayTotal + (isSameDay ? transaction.amount : 0.0);
       });
       return {'day': DateFormat.E().format(weekDay), 'amount': amount};
     });
   }
 
   double get weeklySpending => groupedTransactionValues.fold(
-      0.0, (total, data) => data['amount'] as double);
+      0.0, (total, data) => total + data['amount']);
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +30,16 @@ class Chart extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Row(
           children: groupedTransactionValues
-              .map((data) => Flexible(
-                    fit: FlexFit.tight,
-                    child: _ChartBar(
-                      label: data['day'],
-                      spending: data['amount'],
-                      weeklySpending: weeklySpending,
-                    ),
-                  ))
+              .map(
+                (data) => Flexible(
+                  fit: FlexFit.tight,
+                  child: _ChartBar(
+                    label: data['day'],
+                    spending: data['amount'],
+                    weeklySpending: weeklySpending,
+                  ),
+                ),
+              )
               .toList(),
         ),
       ),
@@ -52,19 +54,24 @@ class _ChartBar extends StatelessWidget {
 
   _ChartBar({this.label, this.spending, this.weeklySpending});
 
-  get weeklyFraction =>
-      0.5; //weeklySpending == 0.0 ? 0.0 : spending / weeklySpending;
+  get weeklyFraction => weeklySpending == 0.0 ? 0.0 : spending / weeklySpending;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        FittedBox(child: Text('\$${spending.toStringAsFixed(0)}')),
+        Container(
+          height: 20,
+          child: FittedBox(
+            child: Text('\$${spending.toStringAsFixed(0)}'),
+          ),
+        ),
         SizedBox(height: 4),
         Container(
           height: 60,
           width: 10,
           child: Stack(
+            alignment: Alignment.bottomCenter,
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(

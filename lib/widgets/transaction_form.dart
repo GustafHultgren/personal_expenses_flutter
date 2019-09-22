@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionForm extends StatefulWidget {
   final Function addTransaction;
@@ -9,17 +10,31 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
-  final titleController = TextEditingController();
+  DateTime _date;
+  final _titleController = TextEditingController();
 
-  final amountController = TextEditingController();
+  final _amountController = TextEditingController();
 
   void submit() {
-    final title = titleController.text;
-    final amount = amountController.text;
-    if (title.isNotEmpty && amount.isNotEmpty) {
-      widget.addTransaction(title, double.parse(amount));
+    final title = _titleController.text;
+    final amount = _amountController.text;
+    if (title.isNotEmpty && amount.isNotEmpty && _date != null) {
+      widget.addTransaction(title, double.parse(amount), _date);
       Navigator.of(context).pop();
     }
+  }
+
+  void _showDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2019),
+      lastDate: DateTime.now(),
+    ).then((date) {
+      setState(() {
+        _date = date;
+      });
+    });
   }
 
   @override
@@ -32,18 +47,32 @@ class _TransactionFormState extends State<TransactionForm> {
           children: <Widget>[
             TextField(
               decoration: InputDecoration(labelText: 'Title'),
-              controller: titleController,
+              controller: _titleController,
               onSubmitted: (_) => submit(),
             ),
             TextField(
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(labelText: 'Amount'),
-              controller: amountController,
+              controller: _amountController,
               onSubmitted: (_) => submit(),
             ),
-            FlatButton(
+            Row(
+              children: <Widget>[
+                Text(_date == null ? 'No Date Chosen!' : DateFormat.yMMMd().format(_date)),
+                FlatButton(
+                  textColor: Theme.of(context).primaryColor,
+                  child: Text(
+                    'Choose Date',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: _showDatePicker,
+                )
+              ],
+            ),
+            RaisedButton(
               child: Text('Add Transaction'),
-              textColor: Colors.purple,
+              color: Theme.of(context).primaryColor,
+              textColor: Theme.of(context).textTheme.button.color,
               onPressed: submit,
             )
           ],
