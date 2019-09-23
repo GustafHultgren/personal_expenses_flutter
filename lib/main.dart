@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
-                button: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                button:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
           appBarTheme: AppBarTheme(
               textTheme: ThemeData.light().textTheme.copyWith(
@@ -43,15 +44,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    var appBar = AppBar(
+      title: Text('Personal Expenses'),
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Personal Expenses'),
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Chart(_transactions),
-            TransactionList(_transactions, _deleteTransaction),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.4 -
+                  appBar.preferredSize.height - MediaQuery.of(context).padding.top, // padding concern needed?
+              child: Chart(_transactions),
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.6 - appBar.preferredSize.height,
+              child: TransactionList(_transactions, _deleteTransaction),
+            ),
           ],
         ),
       ),
@@ -91,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _deleteTransaction(id){
+  void _deleteTransaction(id) {
     setState(() {
       _transactions.removeWhere((tx) => tx.id == id);
     });
