@@ -54,12 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height * 0.4 -
+              height: MediaQuery.of(context).size.height * 0.3 -
                   appBar.preferredSize.height - MediaQuery.of(context).padding.top, // padding concern needed?
               child: Chart(_transactions),
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.6 - appBar.preferredSize.height,
+              height: MediaQuery.of(context).size.height * 0.7 - appBar.preferredSize.height,
               child: TransactionList(_transactions, _deleteTransaction),
             ),
           ],
